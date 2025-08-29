@@ -131,21 +131,52 @@ For production deployment:
 2. Add your production domain to Google OAuth authorized redirect URIs
 3. Deploy to your preferred platform (Vercel, Netlify, etc.)
 
+## Netlify Deployment
+
+### Environment Variables Required for Netlify:
+
+In your Netlify dashboard, go to Site Settings > Environment Variables and add:
+
+```env
+NEXTAUTH_URL=https://stechcal.netlify.app
+NEXTAUTH_SECRET=your_32_character_random_secret
+GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+```
+
+### Generate NEXTAUTH_SECRET:
+```bash
+openssl rand -base64 32
+```
+
+### Google OAuth Setup for Netlify:
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Navigate to APIs & Services > Credentials
+3. Edit your OAuth 2.0 Client ID
+4. Add to Authorized redirect URIs:
+   - `https://stechcal.netlify.app/api/auth/callback/google`
+5. Save changes
+
 ## Troubleshooting
 
+**"Configuration" error on Netlify:**
+- Check that all required environment variables are set in Netlify dashboard
+- Ensure NEXTAUTH_URL matches your Netlify domain exactly
+- Verify Google OAuth redirect URIs include your Netlify domain
+
 **"Invalid redirect URI" error:**
-- Make sure your redirect URI in Google Cloud Console matches your NextAuth configuration
+- Make sure your redirect URI in Google Cloud Console matches your domain
 - For development: `http://localhost:3000/api/auth/callback/google`
-- For production: `https://yourdomain.com/api/auth/callback/google`
+- For production: `https://stechcal.netlify.app/api/auth/callback/google`
 
 **"Calendar API not enabled" error:**
 - Ensure you've enabled the Google Calendar API in Google Cloud Console
 - Check that you're using the correct project
 
-**Authentication issues:**
-- Verify your Google Client ID and Secret are correct
-- Ensure NEXTAUTH_SECRET is set and secure
-- Check that your OAuth consent screen is properly configured
+**Environment Variables:**
+- All required variables must be set in Netlify's environment variables section
+- Use `.env.example` as a template for required variables
+- Never commit actual credentials to the repository
 
 ## License
 
