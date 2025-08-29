@@ -23,9 +23,9 @@ const handler = NextAuth({
       return token
     },
     async session({ session, token }) {
-      session.accessToken = token.accessToken
-      session.refreshToken = token.refreshToken
-      session.accessTokenExpires = token.accessTokenExpires
+      session.accessToken = token.accessToken as string | undefined
+      session.refreshToken = token.refreshToken as string | undefined
+      session.accessTokenExpires = token.accessTokenExpires as number | undefined
       return session
     }
   },
