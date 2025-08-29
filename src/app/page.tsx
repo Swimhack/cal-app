@@ -2,7 +2,8 @@
 
 import { useSession, signIn, signOut } from 'next-auth/react'
 import Calendar from '@/components/calendar'
-import { LogOut, User } from 'lucide-react'
+import { LogOut } from 'lucide-react'
+import Image from 'next/image'
 
 export default function Home() {
   const { data: session, status } = useSession()
@@ -54,9 +55,11 @@ export default function Home() {
             <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-2">
                 {session.user?.image && (
-                  <img
+                  <Image
                     src={session.user.image}
                     alt="Profile"
+                    width={32}
+                    height={32}
                     className="w-8 h-8 rounded-full"
                   />
                 )}

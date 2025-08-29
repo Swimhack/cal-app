@@ -1,5 +1,4 @@
 import { google } from 'googleapis'
-import { getServerSession } from 'next-auth'
 
 export interface CalendarEvent {
   id?: string
@@ -20,7 +19,7 @@ export interface CalendarEvent {
 }
 
 export class GoogleCalendarService {
-  private oauth2Client: any
+  private oauth2Client: InstanceType<typeof google.auth.OAuth2>
 
   constructor(accessToken: string) {
     this.oauth2Client = new google.auth.OAuth2(
@@ -110,7 +109,7 @@ export class GoogleCalendarService {
   }
 }
 
-export async function getCalendarService(session: any) {
+export async function getCalendarService(session: { accessToken?: string }) {
   if (!session?.accessToken) {
     throw new Error('No access token available')
   }

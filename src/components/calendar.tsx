@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useSession } from 'next-auth/react'
 import { ChevronLeft, ChevronRight, Plus, Calendar as CalendarIcon } from 'lucide-react'
 import { format, startOfMonth, endOfMonth, startOfWeek, endOfWeek, addDays, isSameMonth, isSameDay, addMonths, subMonths } from 'date-fns'
@@ -29,13 +29,7 @@ export default function Calendar() {
   const startDate = startOfWeek(monthStart)
   const endDate = endOfWeek(monthEnd)
 
-  useEffect(() => {
-    if (session?.accessToken) {
-      fetchEvents()
-    }
-  }, [session, currentMonth])
-
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     if (!session?.accessToken) return
     
     setLoading(true)
@@ -55,7 +49,13 @@ export default function Calendar() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [session?.accessToken])
+
+  useEffect(() => {
+    if (session?.accessToken) {
+      fetchEvents()
+    }
+  }, [session, currentMonth, fetchEvents])
 
   const nextMonth = () => {
     setCurrentMonth(addMonths(currentMonth, 1))
