@@ -178,6 +178,92 @@ openssl rand -base64 32
 - Use `.env.example` as a template for required variables
 - Never commit actual credentials to the repository
 
+## Docker Deployment
+
+### Quick Start with Docker
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Swimhack/cal-app.git
+   cd cal-app
+   ```
+
+2. **Set up environment variables:**
+   ```bash
+   cp .env.docker .env
+   # Edit .env with your actual Google OAuth credentials
+   ```
+
+3. **Deploy with the automated script:**
+   ```bash
+   ./deploy.sh
+   ```
+
+### Manual Docker Deployment
+
+1. **Build the Docker image:**
+   ```bash
+   docker build -t cal-app:latest .
+   ```
+
+2. **Run with docker-compose:**
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Check health status:**
+   ```bash
+   curl http://localhost:3000/api/health
+   ```
+
+### Production Deployment
+
+For production deployment with HTTPS and reverse proxy:
+
+1. **Create external network:**
+   ```bash
+   docker network create traefik-network
+   ```
+
+2. **Set production environment variables:**
+   ```bash
+   export NEXTAUTH_URL=https://your-domain.com
+   export ACME_EMAIL=your-email@domain.com
+   # Set other environment variables...
+   ```
+
+3. **Deploy with production compose:**
+   ```bash
+   docker-compose -f docker-compose.yml up -d
+   ```
+
+### Docker Commands Reference
+
+```bash
+# View logs
+docker logs calendar-app
+
+# Stop the application
+docker-compose down
+
+# Rebuild and restart
+docker-compose up -d --build
+
+# Health check
+docker exec calendar-app node -e "require('http').get('http://localhost:3000/api/health', console.log)"
+
+# Shell access
+docker exec -it calendar-app sh
+```
+
+### Container Features
+
+- **Multi-stage build** for optimized production image
+- **Non-root user** for security
+- **Health checks** for monitoring
+- **Standalone Next.js output** for minimal runtime
+- **Automatic SSL** with Traefik (production)
+
 ## License
 
 This project is licensed under the MIT License.
