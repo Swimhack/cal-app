@@ -264,6 +264,95 @@ docker exec -it calendar-app sh
 - **Standalone Next.js output** for minimal runtime
 - **Automatic SSL** with Traefik (production)
 
+## Fly.io Deployment
+
+### Quick Deploy to stech-cal.fly.dev
+
+1. **Install Fly.io CLI:**
+   ```bash
+   curl -L https://fly.io/install.sh | sh
+   export PATH="$HOME/.fly/bin:$PATH"
+   ```
+
+2. **Authenticate with Fly.io:**
+   ```bash
+   flyctl auth login
+   ```
+
+3. **Set up environment variables:**
+   - Generate NextAuth secret: `openssl rand -base64 32`
+   - Get Google OAuth credentials from [Google Cloud Console](https://console.cloud.google.com/)
+
+4. **Deploy with automated script:**
+   ```bash
+   ./deploy-fly.sh
+   ```
+
+5. **Set required secrets manually:**
+   ```bash
+   flyctl secrets set NEXTAUTH_SECRET=your_generated_secret
+   flyctl secrets set GOOGLE_CLIENT_ID=your_google_client_id
+   flyctl secrets set GOOGLE_CLIENT_SECRET=your_google_client_secret
+   ```
+
+### Manual Fly.io Deployment
+
+1. **Create the app:**
+   ```bash
+   flyctl apps create stech-cal
+   ```
+
+2. **Set environment variables:**
+   ```bash
+   flyctl secrets set NEXTAUTH_URL=https://stech-cal.fly.dev
+   flyctl secrets set NEXTAUTH_SECRET=$(openssl rand -base64 32)
+   flyctl secrets set GOOGLE_CLIENT_ID=your_client_id
+   flyctl secrets set GOOGLE_CLIENT_SECRET=your_client_secret
+   ```
+
+3. **Deploy:**
+   ```bash
+   flyctl deploy
+   ```
+
+### Google OAuth Setup for Fly.io
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/) > APIs & Services > Credentials
+2. Edit your OAuth 2.0 Client ID
+3. Add authorized redirect URI: `https://stech-cal.fly.dev/api/auth/callback/google`
+4. Save changes
+
+### Fly.io Management Commands
+
+```bash
+# View application status
+flyctl status
+
+# View logs
+flyctl logs
+
+# SSH into the application
+flyctl ssh console
+
+# Scale the application
+flyctl scale count 2
+
+# View secrets
+flyctl secrets list
+
+# Open app in browser
+flyctl open
+```
+
+### Fly.io Configuration Features
+
+- **Automatic HTTPS** with Let's Encrypt certificates
+- **Health checks** via `/api/health` endpoint
+- **Auto-restart** on failures with rollback capability
+- **Persistent storage** with mounted volumes
+- **Global edge locations** for low latency
+- **Zero-downtime deployments** with blue-green strategy
+
 ## License
 
 This project is licensed under the MIT License.
